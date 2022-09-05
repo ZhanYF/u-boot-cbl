@@ -1041,6 +1041,8 @@ static ulong rk3399_clk_set_rate(struct clk *clk, ulong rate)
 	case DCLK_VOP1:
 		ret = rk3399_vop_set_clk(priv->cru, clk->id, rate);
 		break;
+	case ACLK_VOP0:
+	case HCLK_VOP0:
 	case ACLK_VOP1:
 	case HCLK_VOP1:
 	case HCLK_SD:
@@ -1115,6 +1117,11 @@ static int __maybe_unused rk3399_clk_set_parent(struct clk *clk,
 	switch (clk->id) {
 	case SCLK_RMII_SRC:
 		return rk3399_gmac_set_parent(clk, parent);
+	case DCLK_VOP1_DIV:
+	case DCLK_VOP0_DIV:
+	case DCLK_VOP1:
+	case DCLK_VOP0:
+		return 0;
 	}
 
 	debug("%s: unsupported clk %ld\n", __func__, clk->id);
@@ -1395,6 +1402,26 @@ static void rkclk_init(struct rockchip_cru *cru)
 		     pclk_div << PCLK_PERILP1_DIV_CON_SHIFT |
 		     hclk_div << HCLK_PERILP1_DIV_CON_SHIFT |
 		     HCLK_PERILP1_PLL_SEL_GPLL << HCLK_PERILP1_PLL_SEL_SHIFT);
+
+	/*
+	 * VOP clocks
+	 *
+	 * cpll (800 MHz) -> aclk (400 MHz) -> hclk (100 MHz)
+	 * gpll (594 MHz) -> dclk (74.25 MHz)
+	 *
+	 * DCLK_VOP1 ?
+	 *
+	 * CRU_CLKSEL_CON47  vop0
+	 * CRU_CLKSEL_CON48  vop1
+	 */
+	rk_clrsetreg(&cru->clksel_con[47], 0xffff, 0x340); // aclk/1  hclk/4
+	rk_clrsetreg(&cru->clksel_con[48], 0xffff, 0x340); // aclk/1  hclk/4
+	rk_clrsetreg(&cru->clksel_con[49], 0xffff, 0x207); // gpll/8
+	rk_clrsetreg(&cru->clksel_con[50], 0xffff, 0x207); // gpll/8
+
+	// vop1 (BIT(13) | BIT(11) | BIT(10))
+	// vop0 (BIT(12) | BIT(9) | BIT(8))
+	//rk_setreg(&cru->clkgate_con[10], BIT(12) | BIT(9) | BIT(8));
 }
 
 static int rk3399_clk_probe(struct udevice *dev)
