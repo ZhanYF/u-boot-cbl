@@ -466,6 +466,8 @@ static int spl_fit_record_loadable(const struct spl_fit_info *ctx, int index,
 	const char *name;
 	int node;
 
+	return 0;
+
 	if (CONFIG_IS_ENABLED(FIT_IMAGE_TINY))
 		return 0;
 
