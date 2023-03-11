@@ -225,6 +225,10 @@ config MMC_DW
 	  block, this provides host support for SD and MMC interfaces, in both
 	  PIO, internal DMA mode and external DMA mode.
 
+config MMC_DW_PWREN_POLARITY
+	int "Synopsys DesignWare Memory Card Interface PWREN pin polarity"
+	default 1
+
 config MMC_DW_CORTINA
 	bool "Cortina specific extensions for Synopsys DW Memory Card Interface"
 	depends on DM_MMC
