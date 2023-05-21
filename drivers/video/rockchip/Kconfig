@@ -10,6 +10,9 @@
 
 menuconfig VIDEO_ROCKCHIP
 	bool "Enable Rockchip Video Support"
+	select VIDEO_BRIDGE
+	select VIDEO_MIPI_DSI
+	select PANEL
 	depends on VIDEO
 	help
 	  Rockchip SoCs provide video output capabilities for High-Definition
