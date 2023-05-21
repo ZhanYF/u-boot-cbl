@@ -56,9 +56,9 @@ static void rk3399_set_pin_polarity(struct udevice *dev,
  * Try some common regulators. We should really get these from the
  * device tree somehow.
  */
-static const char * const rk3399_regulator_names[] = {
-	"vcc33_lcd"
-};
+//static const char * const rk3399_regulator_names[] = {
+//	"vcc33_lcd"
+//};
 
 static int rk3399_vop_probe(struct udevice *dev)
 {
@@ -66,9 +66,9 @@ static int rk3399_vop_probe(struct udevice *dev)
 	if (!(gd->flags & GD_FLG_RELOC))
 		return 0;
 
-	/* Probe regulators required for the RK3399 VOP */
-	rk_vop_probe_regulators(dev, rk3399_regulator_names,
-				ARRAY_SIZE(rk3399_regulator_names));
+//	/* Probe regulators required for the RK3399 VOP */
+//	rk_vop_probe_regulators(dev, rk3399_regulator_names,
+//				ARRAY_SIZE(rk3399_regulator_names));
 
 	return rk_vop_probe(dev);
 }
