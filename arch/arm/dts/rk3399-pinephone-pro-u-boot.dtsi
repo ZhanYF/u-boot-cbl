@@ -7,25 +7,227 @@
 #include "rk3399-sdram-lpddr4-100.dtsi"
 
 / {
+	aliases {
+		/delete-property/ mmc2;
+	};
+
 	chosen {
 		u-boot,spl-boot-order = "same-as-spl", &sdhci, &sdmmc;
 	};
 
 	config {
 		u-boot,spl-payload-offset = <0x60000>; /* @ 384KB */
+
+		/*
+		 * Hard-reset the board after soft reset.
+        	 */
+		sysreset-gpio = <&gpio1 RK_PA6 GPIO_ACTIVE_HIGH>;
 	};
+
+	adc-keys {
+		button-down {
+			press-threshold-microvolt = <300000>;
+			linux,code = <KEY_DOWN>;
+		};
+
+		button-up {
+			linux,code = <KEY_UP>;
+		};
+	};
+
+	gpio-keys {
+		key-power {
+			linux,code = <KEY_ENTER>;
+		};
+	};
+
+	leds {
+		bootph-pre-ram;
+
+		led-red {
+			bootph-pre-ram;
+		};
+
+		led-green {
+			bootph-pre-ram;
+		};
+
+		led-blue {
+			bootph-pre-ram;
+		};
+	};
+};
+
+&mipi_dsi1 {
+	status = "disabled";
 };
 
 &rng {
 	status = "okay";
 };
 
+&sdio0 {
+	status = "disabled";
+};
+
 &sdhci {
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
 	max-frequency = <25000000>;
-	bootph-all;
 };
 
 &sdmmc {
+	sd-uhs-sdr104;
+
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
 	max-frequency = <20000000>;
-	bootph-all;
+};
+
+&spi1 {
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
+
+	flash@0 {
+		bootph-pre-ram;
+	};
+};
+
+&vopb {
+	/delete-property/ assigned-clocks;
+	/delete-property/ assigned-clock-rates;
+	/delete-property/ assigned-clock-parents;
+
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
+
+	status = "disabled";
+};
+
+&vopl {
+	/delete-property/ assigned-clocks;
+	/delete-property/ assigned-clock-rates;
+	/delete-property/ assigned-clock-parents;
+
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
+};
+
+&emmc_phy {
+	/delete-property/ bootph-all;
+	bootph-pre-ram;
+};
+
+&uart0 {
+	/delete-property/ bootph-all;
+};
+
+&pinctrl {
+	uart2c {
+		bootph-pre-ram;
+
+		uart2c-xfer {
+			bootph-pre-ram;
+		};
+	};
+
+	sdmmc {
+		bootph-pre-ram;
+	};
+
+	spi1 {
+		bootph-pre-ram;
+	};
+};
+
+&i2c3 {
+	/delete-node/ light-sensor@48;
+};
+
+&pcfg_pull_none {
+	bootph-pre-ram;
+};
+
+&pcfg_pull_up {
+	bootph-pre-ram;
+};
+
+&sdmmc_bus4 {
+	bootph-pre-ram;
+};
+
+&sdmmc_clk {
+	bootph-pre-ram;
+};
+
+&sdmmc_cmd {
+	bootph-pre-ram;
+};
+
+&sdmmc_cd {
+	bootph-pre-ram;
+};
+
+&vccio_sd {
+	bootph-pre-ram;
+};
+
+//&vcc3v3_sys {
+	//bootph-pre-ram;
+//};
+
+&i2c0_xfer {
+	bootph-pre-ram;
+};
+
+&i2c0 {
+	bootph-pre-ram;
+};
+
+&rk818 {
+	bootph-pre-ram;
+};
+
+&gpio0 {
+	bootph-pre-ram;
+};
+
+&gpio1 {
+	bootph-pre-ram;
+};
+
+&gpio4 {
+	bootph-pre-ram;
+};
+
+&pmic_int_l {
+	bootph-pre-ram;
+};
+
+&red_led_pin {
+	bootph-pre-ram;
+};
+
+&green_led_pin {
+	bootph-pre-ram;
+};
+
+&blue_led_pin {
+	bootph-pre-ram;
+};
+
+&spi1_clk {
+	bootph-pre-ram;
+};
+
+&spi1_cs0 {
+	bootph-pre-ram;
+};
+
+&spi1_rx {
+	bootph-pre-ram;
+};
+
+&spi1_tx {
+	bootph-pre-ram;
 };
