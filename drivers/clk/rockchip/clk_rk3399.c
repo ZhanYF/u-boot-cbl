@@ -1214,6 +1214,12 @@ static int rk3399_clk_enable(struct clk *clk)
 	case SCLK_PCIEPHY_REF:
 		rk_clrreg(&priv->cru->clksel_con[18], BIT(10));
 		break;
+	case SCLK_DPHY_TX0_CFG:
+		rk_clrreg(&priv->cru->clkgate_con[21], BIT(1));
+		break;
+	case PCLK_VIO_GRF:
+		rk_clrreg(&priv->cru->clkgate_con[29], BIT(12));
+		break;
 	default:
 		debug("%s: unsupported clk %ld\n", __func__, clk->id);
 		return -ENOENT;
@@ -1307,6 +1313,12 @@ static int rk3399_clk_disable(struct clk *clk)
 		break;
 	case SCLK_PCIEPHY_REF:
 		rk_clrreg(&priv->cru->clksel_con[18], BIT(10));
+		break;
+	case SCLK_DPHY_TX0_CFG:
+		rk_setreg(&priv->cru->clkgate_con[21], BIT(1));
+		break;
+	case PCLK_VIO_GRF:
+		rk_setreg(&priv->cru->clkgate_con[29], BIT(12));
 		break;
 	default:
 		debug("%s: unsupported clk %ld\n", __func__, clk->id);
