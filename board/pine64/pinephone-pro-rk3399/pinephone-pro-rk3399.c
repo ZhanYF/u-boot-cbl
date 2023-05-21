@@ -22,27 +22,6 @@
 #define PMUGRF_CON0_VOLSEL_SHIFT 8
 #define PMUGRF_CON0_VOL_SHIFT 9
 
-#ifndef CONFIG_SPL_BUILD
-int board_early_init_f(void)
-{
-	struct udevice *regulator;
-	int ret;
-
-	ret = regulator_get_by_platname("vcc5v0_usb", &regulator);
-	if (ret) {
-		pr_debug("%s vcc5v0_usb init fail! ret %d\n", __func__, ret);
-		goto out;
-	}
-
-	ret = regulator_set_enable(regulator, true);
-	if (ret)
-		pr_debug("%s vcc5v0-host-en-gpio set fail! ret %d\n", __func__, ret);
-
-out:
-	return 0;
-}
-#endif
-
 #ifdef CONFIG_MISC_INIT_R
 static void setup_iodomain(void)
 {
