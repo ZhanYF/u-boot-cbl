@@ -976,6 +976,8 @@ static ulong rk3399_clk_get_rate(struct clk *clk)
 	case PCLK_WDT:
 		rate = rk3399_alive_get_clk(priv->cru);
 		break;
+	case SCLK_DPHY_PLL:
+		return 24000000;
 	default:
 		log_debug("Unknown clock %lu\n", clk->id);
 		return -ENOENT;

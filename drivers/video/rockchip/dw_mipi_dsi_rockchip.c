@@ -521,8 +521,8 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, struct display_timing *timings,
 
 	mpclk = DIV_ROUND_UP(timings->pixelclock.typ, 1000);
 	if (mpclk) {
-		/* take 1 / 0.8, since mbps must big than bandwidth of RGB */
-		tmp = (mpclk * (bpp / lanes) * 10 / 8) / 1000;
+		/* take 1 / 0.9, since mbps must big than bandwidth of RGB */
+		tmp = (mpclk * (bpp / lanes) * 10 / 9) / 1000;
 		if (tmp < max_mbps)
 			target_mbps = tmp;
 		else
