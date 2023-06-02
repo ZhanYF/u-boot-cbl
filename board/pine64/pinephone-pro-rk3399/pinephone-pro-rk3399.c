@@ -17,7 +17,8 @@
 
 #define GRF_IO_VSEL_BT565_GPIO2AB 1
 #define GRF_IO_VSEL_AUDIO_GPIO3D4A 2
-#define PMUGRF_CON0_VSEL_SHIFT 8
+#define PMUGRF_CON0_VOLSEL_SHIFT 8
+#define PMUGRF_CON0_VOL_SHIFT 9
 
 #ifndef CONFIG_SPL_BUILD
 int board_early_init_f(void)
@@ -53,7 +54,7 @@ static void setup_iodomain(void)
 		  GRF_IO_VSEL_BT565_GPIO2AB | GRF_IO_VSEL_AUDIO_GPIO3D4A);
 
 	/* Set GPIO1 1.8v/3.0v source select to PMU1830_VOL */
-	rk_setreg(&pmugrf->soc_con0, 1 << PMUGRF_CON0_VSEL_SHIFT);
+	rk_setreg(&pmugrf->soc_con0, 1 << PMUGRF_CON0_VOLSEL_SHIFT | 1 << PMUGRF_CON0_VOL_SHIFT);
 }
 
 int misc_init_r(void)
