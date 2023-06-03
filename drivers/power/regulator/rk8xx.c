@@ -1154,5 +1154,5 @@ int rk818_spl_configure_usb_chrg_shutdown(struct udevice *pmic, int uvolt)
 			break;
 
 	return pmic_clrsetbits(pmic, REG_USB_CTRL, RK818_USB_CHG_SD_VSEL_MASK,
-			       i);
+			       i << 4);
 }
