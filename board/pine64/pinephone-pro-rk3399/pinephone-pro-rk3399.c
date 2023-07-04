@@ -219,6 +219,38 @@ static void rk818_calibrate(struct udevice *pmic)
         pmic_reg_write(pmic, CAL_OFFSET_REGL, coffset & 0xff);
 
 	mdelay(300);
+
+#if 0
+	/*
+	 * calibrate rint
+	 *
+	 * - adc sample period is about 25-30ms
+	 */
+
+
+	/* disable charger */
+        pmic_reg_write(pmic, CHRG_CTRL_REG1, 0x71);
+
+	mdelay(1000);
+
+	int vol_dis = rk818_get_bat_vol(pmic);
+	int cur_dis = rk818_get_bat_cur(pmic);
+
+	/* enable charger */
+        pmic_reg_write(pmic, CHRG_CTRL_REG1, 0xf1);
+
+	mdelay(1000);
+
+	int vol_en = rk818_get_bat_vol(pmic);
+	int cur_en = rk818_get_bat_cur(pmic);
+
+	int rint = 150;
+        if (abs(cur_en - cur_dis) > 150)
+		rint = 1000 * (vol_en - vol_dis) / (cur_en - cur_dis);
+
+	printf("vol_dis=%d cur_dis=%d vol_en=%d cur_en=%d : rint=%d\n",
+	       vol_dis, cur_dis, vol_en, cur_en, rint);
+#endif
 }
 
 static void blink_led(struct udevice *l, int times, int period)
@@ -339,6 +371,16 @@ void led_setup(void)
 
 		printf("Battery status: vol=%d cur=%d ocv=%d plugin=%d status=%s usb_fault=%d usb_exist=%d bat_exist=%d\n",
 		       vol, cur, ocv, plugin, status_str[chg_status], usb_fault, usb_exist, bat_exist);
+
+#if 0
+		//printf("PMIC regs:\n");
+		uint8_t buffer[0xf2 - 0x20 + 1];
+		pmic_read(pmic, 0x20, buffer, 0xf2 - 0x20 + 1);
+		for (int i = 0x20; i <= 0xf2; i++) {
+			if (i == 0xa0 || i == 0xa1)
+				printf("%02x: %02x\n", i, (unsigned)buffer[i - 0x20]);
+		}
+#endif
 
 		/*
 		 * XXX: allow to continue boot by pressing volume up
