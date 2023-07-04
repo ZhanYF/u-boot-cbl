@@ -385,7 +385,7 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
 				return info;
 		}
 	}
-	dev_dbg(nor->dev, "unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
+	printf("unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
 		id[0], id[1], id[2]);
 	return ERR_PTR(-EMEDIUMTYPE);
 }
