@@ -35,7 +35,7 @@ static int extlinux_get_state_desc(struct udevice *dev, char *buf, int maxsize)
 	return 0;
 }
 
-static int extlinux_getfile(struct pxe_context *ctx, const char *file_path,
+int extlinux_getfile(struct pxe_context *ctx, const char *file_path,
 			    char *file_addr, ulong *sizep)
 {
 	struct extlinux_info *info = ctx->userdata;

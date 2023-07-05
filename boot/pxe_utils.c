@@ -763,6 +763,11 @@ cleanup:
 	return 1;
 }
 
+int pxe_label_boot(struct pxe_context *ctx, struct pxe_label *label)
+{
+	return label_boot(ctx, label);
+}
+
 /** enum token_type - Tokens for the pxe file parser */
 enum token_type {
 	T_EOL,
