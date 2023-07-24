@@ -6,6 +6,8 @@
 #include <fdtdec.h>
 #include <fdt_support.h>
 
+#define RK3588_GRF_SOC_CON6 0xfd58c318
+
 #ifdef CONFIG_OF_BOARD_SETUP
 static int rk3588_add_reserved_memory_fdt_nodes(void *new_blob)
 {
@@ -19,6 +21,9 @@ static int rk3588_add_reserved_memory_fdt_nodes(void *new_blob)
 	};
 	unsigned long flags = FDTDEC_RESERVED_MEMORY_NO_MAP;
 	unsigned int ret;
+
+	/* disable JTAG to fix SD load speed/interference */
+	writel(1 << (14+16), RK3588_GRF_SOC_CON6);
 
 	/*
 	 * Inject the reserved-memory nodes into the DTS
