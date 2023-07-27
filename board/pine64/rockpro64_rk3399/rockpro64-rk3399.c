@@ -54,3 +54,17 @@ int misc_init_r(void)
 }
 
 #endif
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, struct bd_info *bd)
+{
+#ifdef CONFIG_ROCKCHIP_EXTERNAL_TPL
+	int rc = fdt_find_and_setprop(blob, "/memory-controller",
+					"status", "okay", sizeof("okay"), 1);
+	if (rc)
+		printf("Unable to enable DMC err=%s\n", fdt_strerror(rc));
+#endif
+
+	return 0;
+}
+#endif
