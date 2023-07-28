@@ -354,6 +354,7 @@ enum {
 	ACTION_BOOT = 1,
 	ACTION_POWEROFF,
 	ACTION_CONSOLE,
+	ACTION_USB_STORAGE,
 };
 
 struct tmenu_boot_item {
@@ -371,8 +372,11 @@ static int do_tmenu_bootflow(struct cmd_tbl *cmdtp, int flag, int argc, char *co
 	struct udevice *vdev, *tdev, *cdev;
 	struct video_priv *vpriv;
 	struct touchpanel_touch touches[10];
-	int cmd_ret = CMD_RET_FAILURE;
+	int cmd_ret;
 	int ret;
+
+start_again:
+	cmd_ret = CMD_RET_FAILURE;
 
 	struct bootstd_priv *std;
 	ret = bootstd_get_priv(&std);
@@ -380,7 +384,7 @@ static int do_tmenu_bootflow(struct cmd_tbl *cmdtp, int flag, int argc, char *co
 		return CMD_RET_FAILURE;
 
 	// how many items to reserve
-	int extra_items = 2;
+	int extra_items = 3;
 
 	struct tmenu_boot_item items[64] = {};
 	int n_items = 0;
@@ -451,6 +455,12 @@ static int do_tmenu_bootflow(struct cmd_tbl *cmdtp, int flag, int argc, char *co
 	it->id = n_items;
 	it->label = "U-Boot Console";
 	it->action = ACTION_CONSOLE;
+
+	it = &items[n_items++];
+
+	it->id = n_items;
+	it->label = "USB access to eMMC";
+	it->action = ACTION_USB_STORAGE;
 
 	it = &items[n_items++];
 
@@ -576,6 +586,11 @@ next:
 				break;
 			}
 
+			else if (it->action == ACTION_USB_STORAGE) {
+				cmd_ret = CMD_RET_SUCCESS;
+				break;
+			}
+
 			else if (it->action == ACTION_POWEROFF) {
 				ret = sysreset_walk(SYSRESET_POWER_OFF);
 				if (ret == -EINPROGRESS)
@@ -614,6 +629,16 @@ out_restore_console:
 
 	env_set("stdout", "serial,vidconsole");
 	env_set("stderr", "serial,vidconsole");
+
+	if (selected >= 0) {
+		struct tmenu_boot_item *it = &items[selected];
+
+		if (it->action == ACTION_USB_STORAGE) {
+			cli_simple_run_command("ums 0 mmc 0", 0);
+			cli_simple_run_command("bootflow scan", 0);
+			goto start_again;
+		}
+	}
 
 	return cmd_ret;
 }
